@@ -1,0 +1,4 @@
+cd "c:\Users\johnt\Downloads\PinkDoor99_Zenvora_ AI integration platform_files"
+git remote add origin https://github.com/ott/zenvora-ai-platform.git
+git branch -M main
+git push -u origin main
