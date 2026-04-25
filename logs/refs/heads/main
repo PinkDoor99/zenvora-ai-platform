@@ -1,0 +1,4 @@
+0000000000000000000000000000000000000000 038c508dcd3ab364e9a5338679d7b4542243611f PINKDOOR99 <johntaylor271091@gmail.com> 1776853230 +0100	commit (initial): Initial commit - Fixed Zenvora AI Integration Platform
+038c508dcd3ab364e9a5338679d7b4542243611f 5c7c41a37f9f80b8afb5d71c462ee9e5b5697634 PINKDOOR99 <johntaylor271091@gmail.com> 1776853291 +0100	commit: Add comprehensive README with setup instructions
+5c7c41a37f9f80b8afb5d71c462ee9e5b5697634 5c7c41a37f9f80b8afb5d71c462ee9e5b5697634 PINKDOOR99 <johntaylor271091@gmail.com> 1776853546 +0100	Branch: renamed refs/heads/master to refs/heads/main
+5c7c41a37f9f80b8afb5d71c462ee9e5b5697634 4896ef9511c01b7e1debe04db371d2dcb9f50fb4 PINKDOOR99 <johntaylor271091@gmail.com> 1776854718 +0100	commit: Add GitHub setup instructions
