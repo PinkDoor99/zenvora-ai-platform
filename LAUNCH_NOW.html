@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenvora AI Platform - Launch Now</title>
+    
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-blue: #58a6ff;
+            --accent-green: #238636;
+            --accent-purple: #a371f7;
+            --accent-orange: #fb8500;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .server-status {
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-online {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .status-offline {
+            color: var(--accent-orange);
+            font-weight: bold;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .app-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+        }
+
+        .app-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(88, 166, 255, 0.3);
+            border-color: var(--accent-blue);
+        }
+
+        .app-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .app-description {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .launch-button {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .launch-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(88, 166, 255, 0.4);
+        }
+
+        .launch-button:active {
+            transform: translateY(0);
+        }
+
+        .backend-info {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .backend-info h3 {
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+        }
+
+        .api-list {
+            list-style: none;
+        }
+
+        .api-list li {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .instructions {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .instructions h2 {
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+
+        .step-number {
+            background: var(--accent-blue);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">Zenvora AI Platform</div>
+            <div class="subtitle">Advanced AI-Powered Development Suite</div>
+        </header>
+
+        <div class="server-status">
+            <div class="status-online pulse">🟢 Frontend Ready - Click any app below to launch</div>
+        </div>
+
+        <div class="instructions">
+            <h2>🚀 Quick Launch Instructions</h2>
+            <div class="step">
+                <div class="step-number">1</div>
+                <div>Click any application button below to launch it in a new tab</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div>All apps work immediately - no server setup required</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div>AI features are functional with simulated backend responses</div>
+            </div>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Enhanced AI Editor -->
+            <div class="app-card">
+                <div class="app-icon">AI</div>
+                <h2 class="app-title">Enhanced AI Editor</h2>
+                <p class="app-description">Advanced code editor with real-time AI analysis, smart suggestions, and live performance metrics.</p>
+                <a href="app_enhanced.html" target="_blank" class="launch-button">
+                    <span>🚀 Launch Enhanced Editor</span>
+                </a>
+            </div>
+
+            <!-- AI Tools Suite -->
+            <div class="app-card">
+                <div class="app-icon">TOOLS</div>
+                <h2 class="app-title">AI Tools Suite</h2>
+                <p class="app-description">Complete collection of specialized AI tools for code generation, testing, documentation, and optimization.</p>
+                <a href="ai_tools.html" target="_blank" class="launch-button">
+                    <span>🛠️ Launch AI Tools</span>
+                </a>
+            </div>
+
+            <!-- Original App -->
+            <div class="app-card">
+                <div class="app-icon">CLASSIC</div>
+                <h2 class="app-title">Original App</h2>
+                <p class="app-description">The original Zenvora AI Platform with basic features and functionality.</p>
+                <a href="app.html" target="_blank" class="launch-button">
+                    <span>📱 Launch Original App</span>
+                </a>
+            </div>
+
+            <!-- Start Page -->
+            <div class="app-card">
+                <div class="app-icon">HOME</div>
+                <h2 class="app-title">Start Page</h2>
+                <p class="app-description">Professional welcome interface with quick start guide and feature overview.</p>
+                <a href="START_HERE.html" target="_blank" class="launch-button">
+                    <span>🏠 Launch Start Page</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="backend-info">
+            <h3>🔧 Backend API Information</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                The backend server provides real API endpoints. When Node.js is installed, you can start it with:
+            </p>
+            <div style="background: var(--bg-primary); padding: 15px; border-radius: 8px; font-family: monospace; margin-bottom: 15px;">
+                cd backend<br>
+                npm install<br>
+                npm start
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 15px;">Available API endpoints:</p>
+            <ul class="api-list">
+                <li>POST /api/analyze - AI code analysis</li>
+                <li>POST /api/tools/generate-code - Code generation</li>
+                <li>POST /api/tools/generate-tests - Test generation</li>
+                <li>POST /api/tools/security-scan - Security scanning</li>
+                <li>GET /api/projects - Project management</li>
+                <li>GET /api/health - Health check</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click animations to buttons
+            document.querySelectorAll('.launch-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // Create ripple effect
+                    const ripple = document.createElement('span');
+                    ripple.style.position = 'absolute';
+                    ripple.style.width = '20px';
+                    ripple.style.height = '20px';
+                    ripple.style.background = 'rgba(255, 255, 255, 0.5)';
+                    ripple.style.borderRadius = '50%';
+                    ripple.style.transform = 'translate(-50%, -50%)';
+                    ripple.style.pointerEvents = 'none';
+                    ripple.style.animation = 'ripple 0.6s ease-out';
+                    
+                    const rect = this.getBoundingClientRect();
+                    ripple.style.left = (e.clientX - rect.left) + 'px';
+                    ripple.style.top = (e.clientY - rect.top) + 'px';
+                    
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+
+            // Add hover effects to cards
+            document.querySelectorAll('.app-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Check if backend is running
+            fetch('http://localhost:3001/api/health')
+                .then(response => response.json())
+                .then(data => {
+                    document.querySelector('.status-online').innerHTML = '🟢 Backend Online - Full functionality available';
+                })
+                .catch(() => {
+                    document.querySelector('.status-online').innerHTML = '🟡 Backend Offline - Using simulated responses';
+                    document.querySelector('.status-online').className = 'status-offline';
+                });
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    width: 200px;
+                    height: 200px;
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

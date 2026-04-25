@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenvora AI Platform - Professional Development Environment</title>
+    
+    <!-- Modern CSS Framework -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --sidebar-width: 280px;
+            --header-height: 64px;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --bg-card: #1e293b;
+            --border-color: #475569;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --accent-primary: #60a5fa;
+            --accent-secondary: #a78bfa;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --error: #f87171;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Layout Structure */
+        .app-container {
+            display: flex;
+            height: 100vh;
+            position: relative;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            height: var(--header-height);
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 50;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--bg-secondary);
+        }
+
+        /* Sidebar Components */
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 16px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            margin: 2px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Header Components */
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .search-bar {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0 16px 0 40px;
+            font-size: 14px;
+            background: var(--bg-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .header-button:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--error);
+            border-radius: 50%;
+            border: 2px solid var(--bg-card);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            padding: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Dashboard Section */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--error);
+        }
+
+        /* Code Editor Section */
+        .editor-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            height: calc(100vh - var(--header-height));
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-tertiary);
+        }
+
+        .editor-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .editor-tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+        }
+
+        .editor-tab.active {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .editor-button {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .editor-button:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .editor-button.primary {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .editor-button.primary:hover {
+            background: var(--accent-secondary);
+            border-color: var(--accent-secondary);
+        }
+
+        .editor-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .code-editor {
+            flex: 1;
+            padding: 24px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            background: var(--bg-primary);
+            border: none;
+            outline: none;
+            resize: none;
+            color: var(--text-primary);
+        }
+
+        .ai-panel {
+            width: 400px;
+            background: var(--bg-tertiary);
+            border-left: 1px solid var(--border-color);
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .ai-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .ai-suggestions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ai-suggestion {
+            padding: 16px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ai-suggestion:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .suggestion-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .suggestion-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Projects Section */
+        .projects-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .projects-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .project-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .project-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-archived {
+            background: var(--text-tertiary);
+            color: white;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .project-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--text-tertiary);
+        }
+
+        /* Settings Section */
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .settings-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .settings-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .setting-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .setting-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .setting-input {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background: var(--bg-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .setting-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .setting-select {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background: var(--bg-secondary);
+            cursor: pointer;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .search-bar {
+                width: 200px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-content {
+                flex-direction: column;
+            }
+
+            .ai-panel {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+            margin-top: 8px;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">🚀</div>
+                    <span>Zenvora AI</span>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <span class="nav-icon"><i class="fas fa-home"></i></span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-section="editor">
+                    <span class="nav-icon"><i class="fas fa-code"></i></span>
+                    <span>Code Editor</span>
+                </a>
+                <a href="#" class="nav-item" data-section="projects">
+                    <span class="nav-icon"><i class="fas fa-folder"></i></span>
+                    <span>Projects</span>
+                </a>
+                <a href="#" class="nav-item" data-section="learn">
+                    <span class="nav-icon"><i class="fas fa-graduation-cap"></i></span>
+                    <span>Learn</span>
+                </a>
+                <a href="#" class="nav-item" data-section="analytics">
+                    <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item" data-section="settings">
+                    <span class="nav-icon"><i class="fas fa-cog"></i></span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="search-bar">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search files, commands, or help...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-button tooltip" data-tooltip="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge"></span>
+                    </button>
+                    <button class="header-button tooltip" data-tooltip="Command Palette">
+                        <i class="fas fa-terminal"></i>
+                    </button>
+                    <button class="header-button tooltip" data-tooltip="Toggle Theme" id="theme-toggle">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
+                    <div class="user-avatar">JD</div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="content-section active">
+                    <div class="dashboard-grid">
+                        <div class="stat-card fade-in">
+                            <div class="stat-header">
+                                <div class="stat-title">Active Projects</div>
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white;">
+                                    <i class="fas fa-folder"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value">12</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+2 from last week</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card fade-in">
+                            <div class="stat-header">
+                                <div class="stat-title">Code Generated</div>
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #34d399); color: white;">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value">1,247</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+18% from last month</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card fade-in">
+                            <div class="stat-header">
+                                <div class="stat-title">AI Requests</div>
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24); color: white;">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value">3,892</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+45% from last month</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card fade-in">
+                            <div class="stat-header">
+                                <div class="stat-title">Subscription Tier</div>
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white;">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value">Pro</div>
+                            <div class="stat-change">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Active until Dec 31</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div style="background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); padding: 24px; margin-top: 24px;">
+                        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--text-primary);">Recent Activity</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px;">
+                                <div style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></div>
+                                <span style="font-size: 14px; color: var(--text-secondary);">Generated React component for dashboard</span>
+                                <span style="font-size: 12px; color: var(--text-tertiary); margin-left: auto;">2 hours ago</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px;">
+                                <div style="width: 8px; height: 8px; background: var(--accent-primary); border-radius: 50%;"></div>
+                                <span style="font-size: 14px; color: var(--text-secondary);">Created new project: E-commerce Platform</span>
+                                <span style="font-size: 12px; color: var(--text-tertiary); margin-left: auto;">5 hours ago</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px;">
+                                <div style="width: 8px; height: 8px; background: var(--warning); border-radius: 50%;"></div>
+                                <span style="font-size: 14px; color: var(--text-secondary);">Fixed security vulnerability in authentication</span>
+                                <span style="font-size: 12px; color: var(--text-tertiary); margin-left: auto;">1 day ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Code Editor Section -->
+                <section id="editor" class="content-section">
+                    <div class="editor-container">
+                        <div class="editor-header">
+                            <div class="editor-tabs">
+                                <div class="editor-tab active">app.js</div>
+                                <div class="editor-tab">styles.css</div>
+                                <div class="editor-tab">index.html</div>
+                            </div>
+                            <div class="editor-actions">
+                                <button class="editor-button">
+                                    <i class="fas fa-play"></i>
+                                    <span>Run</span>
+                                </button>
+                                <button class="editor-button primary">
+                                    <i class="fas fa-robot"></i>
+                                    <span>AI Assist</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="editor-content">
+                            <textarea class="code-editor" placeholder="// Start coding here or let AI help you...
+
+function createDashboard() {
+    const dashboard = document.createElement('div');
+    dashboard.className = 'dashboard';
+    
+    // AI can help complete this...
+    
+    return dashboard;
+}"></textarea>
+                            <div class="ai-panel">
+                                <div class="ai-header">AI Assistant</div>
+                                <div class="ai-suggestions">
+                                    <div class="ai-suggestion">
+                                        <div class="suggestion-title">Complete Function</div>
+                                        <div class="suggestion-description">Finish the createDashboard function with proper DOM manipulation</div>
+                                    </div>
+                                    <div class="ai-suggestion">
+                                        <div class="suggestion-title">Optimize Code</div>
+                                        <div class="suggestion-description">Suggest performance improvements for this function</div>
+                                    </div>
+                                    <div class="ai-suggestion">
+                                        <div class="suggestion-title">Add Error Handling</div>
+                                        <div class="suggestion-description">Include try-catch blocks and proper error messages</div>
+                                    </div>
+                                    <div class="ai-suggestion">
+                                        <div class="suggestion-title">Generate Tests</div>
+                                        <div class="suggestion-description">Create unit tests for this function</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Projects Section -->
+                <section id="projects" class="content-section">
+                    <div class="projects-header">
+                        <h2 class="projects-title">My Projects</h2>
+                        <button class="editor-button primary">
+                            <i class="fas fa-plus"></i>
+                            <span>New Project</span>
+                        </button>
+                    </div>
+                    <div class="projects-grid">
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-title">E-commerce Platform</div>
+                                <div class="project-status status-active">Active</div>
+                            </div>
+                            <div class="project-description">
+                                Full-stack e-commerce solution with React, Node.js, and MongoDB integration.
+                            </div>
+                            <div class="project-stats">
+                                <span><i class="fas fa-file-code"></i> 247 files</span>
+                                <span><i class="fas fa-code-branch"></i> 12 branches</span>
+                                <span><i class="fas fa-clock"></i> Updated 2h ago</span>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-title">Mobile App Dashboard</div>
+                                <div class="project-status status-active">Active</div>
+                            </div>
+                            <div class="project-description">
+                                React Native mobile application with real-time analytics and user management.
+                            </div>
+                            <div class="project-stats">
+                                <span><i class="fas fa-file-code"></i> 156 files</span>
+                                <span><i class="fas fa-code-branch"></i> 8 branches</span>
+                                <span><i class="fas fa-clock"></i> Updated 1d ago</span>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-title">AI Content Generator</div>
+                                <div class="project-status status-active">Active</div>
+                            </div>
+                            <div class="project-description">
+                                Machine learning powered content generation system with natural language processing.
+                            </div>
+                            <div class="project-stats">
+                                <span><i class="fas fa-file-code"></i> 89 files</span>
+                                <span><i class="fas fa-code-branch"></i> 5 branches</span>
+                                <span><i class="fas fa-clock"></i> Updated 3d ago</span>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-title">Portfolio Website</div>
+                                <div class="project-status status-archived">Archived</div>
+                            </div>
+                            <div class="project-description">
+                                Personal portfolio website with modern design and smooth animations.
+                            </div>
+                            <div class="project-stats">
+                                <span><i class="fas fa-file-code"></i> 45 files</span>
+                                <span><i class="fas fa-code-branch"></i> 3 branches</span>
+                                <span><i class="fas fa-clock"></i> Updated 2w ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Learn Section -->
+                <section id="learn" class="content-section">
+                    <div style="max-width: 1000px; margin: 0 auto;">
+                        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 32px; color: var(--text-primary);">Learn to Code with AI</h2>
+                        <p style="font-size: 18px; color: var(--text-secondary); margin-bottom: 32px; line-height: 1.6;">
+                            Master programming with personalized AI-powered lessons, interactive exercises, and real-time feedback.
+                        </p>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                            <div class="stat-card" style="cursor: pointer;">
+                                <div class="stat-header">
+                                    <div class="stat-title">Beginner</div>
+                                    <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #34d399); color: white;">
+                                        <i class="fas fa-seedling"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value">12 Lessons</div>
+                                <div style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">
+                                    Start your coding journey with fundamentals and AI guidance.
+                                </div>
+                            </div>
+
+                            <div class="stat-card" style="cursor: pointer;">
+                                <div class="stat-header">
+                                    <div class="stat-title">Intermediate</div>
+                                    <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white;">
+                                        <i class="fas fa-code"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value">18 Lessons</div>
+                                <div style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">
+                                    Build on your skills with more complex projects and patterns.
+                                </div>
+                            </div>
+
+                            <div class="stat-card" style="cursor: pointer;">
+                                <div class="stat-header">
+                                    <div class="stat-title">Advanced</div>
+                                    <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24); color: white;">
+                                        <i class="fas fa-rocket"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value">24 Lessons</div>
+                                <div style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">
+                                    Master professional development with advanced AI techniques.
+                                </div>
+                            </div>
+
+                            <div class="stat-card" style="cursor: pointer;">
+                                <div class="stat-header">
+                                    <div class="stat-title">Expert</div>
+                                    <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white;">
+                                        <i class="fas fa-crown"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value">16 Lessons</div>
+                                <div style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">
+                                    Become a coding expert with enterprise-level projects.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analytics Section -->
+                <section id="analytics" class="content-section">
+                    <div style="max-width: 1000px; margin: 0 auto;">
+                        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 32px; color: var(--text-primary);">Analytics Dashboard</h2>
+                        
+                        <div class="dashboard-grid">
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div class="stat-title">Total Revenue</div>
+                                    <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #34d399); color: white;">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value">$12,847</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+23% from last month</span>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div class="stat-title">Active Users</div>
+                                    <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white;">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value">1,247</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+15% from last month</span>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div class="stat-title">Conversion Rate</div>
+                                    <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24); color: white;">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value">8.2%</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+2.1% from last month</span>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div class="stat-title">Avg. Session Time</div>
+                                    <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white;">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value">24m</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+5m from last month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings" class="content-section">
+                    <div class="settings-container">
+                        <div class="settings-section">
+                            <h3 class="settings-title">Profile Settings</h3>
+                            <div class="settings-grid">
+                                <div class="setting-item">
+                                    <label class="setting-label">Full Name</label>
+                                    <input type="text" class="setting-input" value="John Doe">
+                                </div>
+                                <div class="setting-item">
+                                    <label class="setting-label">Email</label>
+                                    <input type="email" class="setting-input" value="john.doe@example.com">
+                                </div>
+                                <div class="setting-item">
+                                    <label class="setting-label">Role</label>
+                                    <select class="setting-select">
+                                        <option>Developer</option>
+                                        <option>Team Lead</option>
+                                        <option>Administrator</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3 class="settings-title">Preferences</h3>
+                            <div class="settings-grid">
+                                <div class="setting-item">
+                                    <label class="setting-label">Theme</label>
+                                    <select class="setting-select">
+                                        <option>Light</option>
+                                        <option>Dark</option>
+                                        <option>Auto</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <label class="setting-label">Language</label>
+                                    <select class="setting-select">
+                                        <option>English</option>
+                                        <option>Spanish</option>
+                                        <option>French</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <label class="setting-label">Code Editor Theme</label>
+                                    <select class="setting-select">
+                                        <option>VS Code Dark</option>
+                                        <option>GitHub Light</option>
+                                        <option>Monokai</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3 class="settings-title">Subscription</h3>
+                            <div style="background: var(--bg-tertiary); padding: 20px; border-radius: 8px; margin-top: 16px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <div>
+                                        <div style="font-size: 18px; font-weight: 600; color: var(--text-primary);">Professional Plan</div>
+                                        <div style="font-size: 14px; color: var(--text-secondary);">$19.99/month</div>
+                                    </div>
+                                    <button class="editor-button primary">
+                                        <i class="fas fa-crown"></i>
+                                        <span>Upgrade</span>
+                                    </button>
+                                </div>
+                                <div style="font-size: 14px; color: var(--text-secondary);">
+                                    Unlimited AI requests, advanced features, priority support.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Backend API Configuration
+        const API_BASE = 'http://localhost:3001/api';
+        
+        // API Helper Functions (with fallback to localStorage)
+        async function apiCall(endpoint, method = 'GET', data = null) {
+            try {
+                const options = {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+                
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                return await response.json();
+            } catch (error) {
+                console.log('Backend not available, using localStorage fallback');
+                return localStorageFallback(endpoint, method, data);
+            }
+        }
+        
+        // LocalStorage fallback for when backend is not available
+        function localStorageFallback(endpoint, method, data) {
+            // AI suggestions
+            if (endpoint === '/ai/suggest') {
+                return {
+                    success: true,
+                    suggestion: data.suggestion,
+                    response: `AI suggestion: ${data.suggestion} - processed locally`,
+                    timestamp: new Date().toISOString()
+                };
+            }
+            
+            // Project loading
+            if (endpoint === '/projects/load') {
+                const projects = JSON.parse(localStorage.getItem('zenvora_projects') || '[]');
+                const project = projects.find(p => p.name === data.name);
+                return {
+                    success: true,
+                    project: project || { name: data.name, code: '// New project', language: 'javascript' }
+                };
+            }
+            
+            // Lessons
+            if (endpoint === '/lessons') {
+                const lessons = {
+                    'Beginner': [
+                        { id: 1, title: 'Introduction to Variables', content: 'Learn about variables in programming' },
+                        { id: 2, title: 'Functions Basics', content: 'Understanding functions and their usage' }
+                    ],
+                    'Intermediate': [
+                        { id: 3, title: 'Advanced Functions', content: 'Higher-order functions and callbacks' },
+                        { id: 4, title: 'Data Structures', content: 'Arrays, objects, and more' }
+                    ],
+                    'Advanced': [
+                        { id: 5, title: 'Design Patterns', content: 'Common software design patterns' },
+                        { id: 6, title: 'Performance Optimization', content: 'Optimizing code performance' }
+                    ],
+                    'Expert': [
+                        { id: 7, title: 'System Architecture', content: 'Building scalable systems' },
+                        { id: 8, title: 'Security Best Practices', content: 'Securing applications' }
+                    ]
+                };
+                return { success: true, lessons: lessons[data.level] || lessons['Beginner'] };
+            }
+            
+            // Settings
+            if (endpoint === '/settings') {
+                const settings = JSON.parse(localStorage.getItem('zenvora_settings') || '{}');
+                settings[data.key] = data.value;
+                localStorage.setItem('zenvora_settings', JSON.stringify(settings));
+                return { success: true, message: `Setting ${data.key} saved` };
+            }
+            
+            return { success: true, message: 'Operation completed locally' };
+        }
+        
+        // Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active class from all items and sections
+                navItems.forEach(nav => nav.classList.remove('active'));
+                contentSections.forEach(section => section.classList.remove('active'));
+                
+                // Add active class to clicked item and corresponding section
+                item.classList.add('active');
+                const targetSection = item.dataset.section;
+                document.getElementById(targetSection).classList.add('active');
+                
+                // Close mobile sidebar
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.add('collapsed');
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            if (query.length > 2) {
+                console.log('Searching for:', query);
+                // Implement search functionality
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K for search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            
+            // Ctrl/Cmd + / for command palette
+            if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                e.preventDefault();
+                console.log('Open command palette');
+            }
+        });
+
+        // AI Panel interactions
+        const aiSuggestions = document.querySelectorAll('.ai-suggestion');
+        aiSuggestions.forEach(suggestion => {
+            suggestion.addEventListener('click', async () => {
+                const title = suggestion.querySelector('.suggestion-title').textContent;
+                console.log('AI Suggestion clicked:', title);
+                
+                // Call backend API for AI suggestion
+                const result = await apiCall('/ai/suggest', 'POST', { suggestion: title });
+                console.log('AI Result:', result);
+                
+                // Show notification
+                showNotification(`AI suggestion applied: ${title}`, 'success');
+            });
+        });
+
+        // Project cards
+        const projectCards = document.querySelectorAll('.project-card');
+        projectCards.forEach(card => {
+            card.addEventListener('click', async () => {
+                const title = card.querySelector('.project-title').textContent;
+                console.log('Project clicked:', title);
+                
+                // Call backend API to load project
+                const result = await apiCall('/projects/load', 'POST', { name: title });
+                console.log('Project loaded:', result);
+                
+                // Show notification
+                showNotification(`Project loaded: ${title}`, 'success');
+            });
+        });
+
+        // Learn level cards
+        const learnCards = document.querySelectorAll('#learn .stat-card');
+        learnCards.forEach(card => {
+            card.addEventListener('click', async () => {
+                const level = card.querySelector('.stat-title').textContent;
+                console.log('Starting lessons for:', level);
+                
+                // Call backend API to get lessons
+                const result = await apiCall('/lessons', 'POST', { level });
+                console.log('Lessons loaded:', result);
+                
+                // Show notification
+                showNotification(`Loading ${level} lessons...`, 'info');
+            });
+        });
+
+        // Settings form handling
+        const settingInputs = document.querySelectorAll('.setting-input, .setting-select');
+        settingInputs.forEach(input => {
+            input.addEventListener('change', async () => {
+                console.log('Setting changed:', input.value);
+                
+                // Call backend API to save settings
+                const result = await apiCall('/settings', 'POST', { 
+                    key: input.id, 
+                    value: input.value 
+                });
+                console.log('Settings saved:', result);
+                
+                // Show notification
+                showNotification('Settings saved', 'success');
+            });
+        });
+        
+        // Notification function
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                color: white;
+                border-radius: 8px;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Responsive handling
+        function handleResize() {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('collapsed');
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        // Initialize tooltips
+        const tooltips = document.querySelectorAll('.tooltip');
+        tooltips.forEach(tooltip => {
+            tooltip.addEventListener('mouseenter', () => {
+                // Show tooltip
+            });
+            
+            tooltip.addEventListener('mouseleave', () => {
+                // Hide tooltip
+            });
+        });
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Update stats randomly to simulate real-time data
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach(stat => {
+                if (Math.random() > 0.8) {
+                    const currentValue = stat.textContent;
+                    if (currentValue.includes('$')) {
+                        const numValue = parseFloat(currentValue.replace('$', '').replace(',', ''));
+                        const newValue = numValue + (Math.random() * 100 - 50);
+                        stat.textContent = '$' + newValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    }
+                }
+            });
+        }, 5000);
+
+        // Add loading states
+        function showLoading(element) {
+            element.innerHTML = '<div class="loading"><div class="spinner"></div><span>Loading...</span></div>';
+        }
+
+        function hideLoading(element, content) {
+            element.innerHTML = content;
+        }
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const html = document.documentElement;
+
+        // Load saved theme or default to light
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            
+            // Add smooth transition
+            document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+        });
+
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+
+        // Initialize
+        console.log('Zenvora AI Platform - Professional UI Loaded');
+    </script>
+</body>
+</html>

@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenvora AI Integration Platform - Enhanced</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-blue: #58a6ff;
+            --accent-green: #238636;
+            --accent-orange: #fb8500;
+            --accent-red: #da3633;
+            --accent-purple: #a371f7;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header {
+            background: var(--bg-secondary);
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo::before {
+            content: "AI";
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .nav a:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-blue);
+        }
+        
+        .nav a.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+        
+        .status-bar {
+            background: var(--bg-tertiary);
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .status-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .status-indicators {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.online {
+            background: var(--accent-green);
+        }
+        
+        .status-dot.processing {
+            background: var(--accent-orange);
+        }
+        
+        .status-dot.offline {
+            background: var(--accent-red);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 20px;
+            margin-top: 20px;
+            min-height: calc(100vh - 120px);
+        }
+        
+        .sidebar {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .sidebar h3 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-item {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: var(--bg-tertiary);
+            color: var(--accent-blue);
+        }
+        
+        .workspace {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .workspace-header {
+            background: var(--bg-tertiary);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .workspace-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .workspace-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn:hover {
+            background: #4a8eff;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+        
+        .btn-success {
+            background: var(--accent-green);
+        }
+        
+        .btn-success:hover {
+            background: #2ea043;
+        }
+        
+        .code-editor {
+            padding: 20px;
+            min-height: 400px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            margin: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .code-editor textarea {
+            width: 100%;
+            height: 350px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+        }
+        
+        .ai-suggestions {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-blue);
+            border-radius: 6px;
+            padding: 15px;
+            width: 250px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .ai-suggestions h4 {
+            color: var(--accent-blue);
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .suggestion-item {
+            padding: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+        
+        .suggestion-item:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+        
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .panel {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .panel h3 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .metric-value {
+            font-weight: bold;
+            color: var(--accent-blue);
+        }
+        
+        .progress-bar {
+            background: var(--bg-tertiary);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .activity-feed {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            padding: 10px;
+            border-left: 3px solid var(--accent-blue);
+            margin-bottom: 10px;
+            background: var(--bg-tertiary);
+            border-radius: 0 4px 4px 0;
+            font-size: 13px;
+        }
+        
+        .activity-time {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        
+        .floating-action {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent-purple);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(163, 113, 247, 0.4);
+            transition: all 0.3s;
+            font-size: 24px;
+        }
+        
+        .floating-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(163, 113, 247, 0.6);
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar, .right-panel {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .workspace-actions {
+                flex-wrap: wrap;
+            }
+        }
+        
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Zenvora AI Platform</div>
+                <nav class="nav">
+                    <a href="#dashboard" class="active">Dashboard</a>
+                    <a href="#code-editor">Code Editor</a>
+                    <a href="#analytics">Analytics</a>
+                    <a href="#repositories">Repositories</a>
+                    <a href="#settings">Settings</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="status-bar">
+        <div class="container">
+            <div class="status-content">
+                <div class="status-indicators">
+                    <div class="status-item">
+                        <div class="status-dot online"></div>
+                        <span>AI Engine Online</span>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-dot processing"></div>
+                        <span>Analyzing Code</span>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-dot online"></div>
+                        <span>3 Repositories Connected</span>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <span>Last sync: 2 minutes ago</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <aside class="sidebar">
+                <h3>Quick Actions</h3>
+                <a href="#new-analysis" class="nav-item">New Analysis</a>
+                <a href="#recent-files" class="nav-item active">Recent Files</a>
+                <a href="#ai-suggestions" class="nav-item">AI Suggestions</a>
+                <a href="#code-review" class="nav-item">Code Review</a>
+                <a href="#security-scan" class="nav-item">Security Scan</a>
+                
+                <h3 style="margin-top: 30px;">Tools</h3>
+                <a href="#refactor" class="nav-item">Refactor Code</a>
+                <a href="#optimize" class="nav-item">Optimize Performance</a>
+                <a href="#test-generator" class="nav-item">Test Generator</a>
+                <a href="#docs-generator" class="nav-item">Docs Generator</a>
+            </aside>
+
+            <main class="workspace">
+                <div class="workspace-header">
+                    <h2 class="workspace-title">AI Code Editor</h2>
+                    <div class="workspace-actions">
+                        <button class="btn btn-secondary" onclick="runAnalysis()">
+                            <span>Run Analysis</span>
+                        </button>
+                        <button class="btn btn-success" onclick="saveCode()">
+                            <span>Save Changes</span>
+                        </button>
+                        <button class="btn" onclick="aiAssist()">
+                            <span>AI Assist</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="code-editor">
+                    <textarea id="codeInput" placeholder="// Start coding or paste your code here...
+// AI will provide real-time suggestions and analysis
+
+function analyzeCode(code) {
+    // AI-powered code analysis
+    const issues = [];
+    const suggestions = [];
+    
+    // Analyze for potential improvements
+    if (code.includes('var ')) {
+        suggestions.push('Consider using const/let instead of var');
+    }
+    
+    return { issues, suggestions };
+}"></textarea>
+                    
+                    <div class="ai-suggestions" id="aiSuggestions" style="display: none;">
+                        <h4>AI Suggestions</h4>
+                        <div class="suggestion-item" onclick="applySuggestion('Use const/let instead of var')">
+                            Use const/let instead of var
+                        </div>
+                        <div class="suggestion-item" onclick="applySuggestion('Add error handling')">
+                            Add error handling
+                        </div>
+                        <div class="suggestion-item" onclick="applySuggestion('Optimize loop structure')">
+                            Optimize loop structure
+                        </div>
+                        <div class="suggestion-item" onclick="applySuggestion('Add JSDoc comments')">
+                            Add JSDoc comments
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="right-panel">
+                <div class="panel fade-in">
+                    <h3>Code Metrics</h3>
+                    <div class="metric">
+                        <span class="metric-label">Complexity</span>
+                        <span class="metric-value">7.2</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 72%;"></div>
+                    </div>
+                    
+                    <div class="metric">
+                        <span class="metric-label">Maintainability</span>
+                        <span class="metric-value">85%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 85%;"></div>
+                    </div>
+                    
+                    <div class="metric">
+                        <span class="metric-label">Test Coverage</span>
+                        <span class="metric-value">68%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 68%;"></div>
+                    </div>
+                    
+                    <div class="metric">
+                        <span class="metric-label">Security Score</span>
+                        <span class="metric-value">9.1/10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 91%;"></div>
+                    </div>
+                </div>
+
+                <div class="panel fade-in">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <div>AI completed code analysis</div>
+                            <div class="activity-time">2 min ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div>3 security issues fixed</div>
+                            <div class="activity-time">5 min ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div>Performance optimization applied</div>
+                            <div class="activity-time">12 min ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div>New repository connected</div>
+                            <div class="activity-time">1 hour ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel fade-in">
+                    <h3>AI Insights</h3>
+                    <div class="metric">
+                        <span class="metric-label">Code Quality</span>
+                        <span class="metric-value" style="color: var(--accent-green);">Good</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Performance</span>
+                        <span class="metric-value" style="color: var(--accent-orange);">Fair</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Security</span>
+                        <span class="metric-value" style="color: var(--accent-green);">Strong</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <div class="floating-action" onclick="openAIChat()">
+        AI
+    </div>
+
+    <script>
+        // Enhanced AI Code Editor Functionality
+        let aiAnalysisInterval;
+        let currentSuggestions = [];
+
+        // Initialize the enhanced editor
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAIEditor();
+            startRealTimeAnalysis();
+            initializeAnimations();
+        });
+
+        function initializeAIEditor() {
+            const codeInput = document.getElementById('codeInput');
+            
+            // Real-time AI analysis
+            codeInput.addEventListener('input', debounce(function() {
+                performAIAnalysis();
+            }, 1000));
+            
+            // Auto-save functionality
+            codeInput.addEventListener('input', debounce(function() {
+                autoSave();
+            }, 5000));
+        }
+
+        function performAIAnalysis() {
+            const code = document.getElementById('codeInput').value;
+            const suggestions = generateAISuggestions(code);
+            updateAISuggestions(suggestions);
+            updateMetrics(code);
+        }
+
+        function generateAISuggestions(code) {
+            const suggestions = [];
+            
+            // AI-powered code analysis
+            if (code.includes('var ')) {
+                suggestions.push('Use const/let instead of var');
+            }
+            
+            if (code.includes('console.log') && !code.includes('logger')) {
+                suggestions.push('Use proper logging system');
+            }
+            
+            if (code.includes('function') && !code.includes('=>')) {
+                suggestions.push('Consider arrow functions for callbacks');
+            }
+            
+            if (!code.includes('try') && !code.includes('catch')) {
+                suggestions.push('Add error handling');
+            }
+            
+            if (code.length > 500 && !code.includes('/*') && !code.includes('//')) {
+                suggestions.push('Add documentation comments');
+            }
+            
+            return suggestions;
+        }
+
+        function updateAISuggestions(suggestions) {
+            const aiPanel = document.getElementById('aiSuggestions');
+            const suggestionsList = aiPanel.querySelector('h4').nextElementSibling;
+            
+            if (suggestions.length > 0) {
+                aiPanel.style.display = 'block';
+                aiPanel.classList.add('slide-in');
+                
+                // Update suggestions list
+                let html = '';
+                suggestions.forEach(suggestion => {
+                    html += `<div class="suggestion-item" onclick="applySuggestion('${suggestion}')">${suggestion}</div>`;
+                });
+                suggestionsList.innerHTML = html;
+            } else {
+                aiPanel.style.display = 'none';
+            }
+        }
+
+        function applySuggestion(suggestion) {
+            const codeInput = document.getElementById('codeInput');
+            const currentCode = codeInput.value;
+            
+            // Apply AI suggestion logic
+            switch(suggestion) {
+                case 'Use const/let instead of var':
+                    codeInput.value = currentCode.replace(/\bvar\b/g, 'const');
+                    break;
+                case 'Add error handling':
+                    codeInput.value = currentCode + '\n\ntry {\n    // Your code here\n} catch (error) {\n    console.error("Error:", error);\n}';
+                    break;
+                case 'Add JSDoc comments':
+                    codeInput.value = '/**\n * Function description\n * @param {type} paramName - description\n * @returns {type} description\n */\n' + currentCode;
+                    break;
+            }
+            
+            performAIAnalysis();
+        }
+
+        function updateMetrics(code) {
+            // Update code metrics based on analysis
+            const complexity = calculateComplexity(code);
+            const maintainability = calculateMaintainability(code);
+            const testCoverage = estimateTestCoverage(code);
+            const securityScore = calculateSecurityScore(code);
+            
+            updateMetricDisplay('Complexity', complexity);
+            updateMetricDisplay('Maintainability', maintainability + '%');
+            updateMetricDisplay('Test Coverage', testCoverage + '%');
+            updateMetricDisplay('Security Score', securityScore + '/10');
+        }
+
+        function calculateComplexity(code) {
+            // Simplified complexity calculation
+            const lines = code.split('\n').length;
+            const cyclomaticComplexity = (code.match(/if|for|while|switch|catch/g) || []).length + 1;
+            return (cyclomaticComplexity * 2).toFixed(1);
+        }
+
+        function calculateMaintainability(code) {
+            // Simplified maintainability index
+            const lines = code.split('\n').length;
+            const comments = (code.match(/\/\*[\s\S]*?\*\/|\/\/.*/g) || []).length;
+            const commentRatio = comments / lines;
+            return Math.min(95, Math.round((commentRatio * 100) + 50));
+        }
+
+        function estimateTestCoverage(code) {
+            // Simplified test coverage estimation
+            const functions = (code.match(/function|=>/g) || []).length;
+            const tests = (code.match(/test|it|describe/g) || []).length;
+            return Math.min(95, Math.round((tests / Math.max(1, functions)) * 100));
+        }
+
+        function calculateSecurityScore(code) {
+            // Simplified security scoring
+            let score = 10;
+            
+            if (code.includes('eval')) score -= 3;
+            if (code.includes('innerHTML')) score -= 2;
+            if (code.includes('document.write')) score -= 3;
+            if (!code.includes('try') && !code.includes('catch')) score -= 1;
+            
+            return Math.max(1, score);
+        }
+
+        function updateMetricDisplay(label, value) {
+            const metrics = document.querySelectorAll('.metric');
+            metrics.forEach(metric => {
+                if (metric.querySelector('.metric-label').textContent === label) {
+                    metric.querySelector('.metric-value').textContent = value;
+                    
+                    // Update progress bar
+                    const progressBar = metric.nextElementSibling;
+                    if (progressBar && progressBar.classList.contains('progress-bar')) {
+                        const fill = progressBar.querySelector('.progress-fill');
+                        const percentage = parseFloat(value.toString().replace(/[^0-9.]/g, ''));
+                        fill.style.width = Math.min(100, percentage) + '%';
+                    }
+                }
+            });
+        }
+
+        function runAnalysis() {
+            showNotification('Running AI analysis...', 'processing');
+            
+            setTimeout(() => {
+                performAIAnalysis();
+                showNotification('Analysis complete! Check suggestions.', 'success');
+                addActivity('AI completed full code analysis');
+            }, 2000);
+        }
+
+        function saveCode() {
+            const code = document.getElementById('codeInput').value;
+            localStorage.setItem('zenvora-code', code);
+            showNotification('Code saved successfully', 'success');
+            addActivity('Code changes saved');
+        }
+
+        function aiAssist() {
+            const aiPanel = document.getElementById('aiSuggestions');
+            aiPanel.style.display = aiPanel.style.display === 'none' ? 'block' : 'none';
+            
+            if (aiPanel.style.display === 'block') {
+                performAIAnalysis();
+                addActivity('AI assistance activated');
+            }
+        }
+
+        function openAIChat() {
+            showNotification('AI Chat coming soon!', 'info');
+        }
+
+        function autoSave() {
+            const code = document.getElementById('codeInput').value;
+            localStorage.setItem('zenvora-code-autosave', code);
+            console.log('Code auto-saved');
+        }
+
+        function startRealTimeAnalysis() {
+            aiAnalysisInterval = setInterval(() => {
+                const code = document.getElementById('codeInput').value;
+                if (code.length > 50) {
+                    performAIAnalysis();
+                }
+            }, 10000);
+        }
+
+        function addActivity(activity) {
+            const feed = document.querySelector('.activity-feed');
+            const activityItem = document.createElement('div');
+            activityItem.className = 'activity-item slide-in';
+            activityItem.innerHTML = `
+                <div>${activity}</div>
+                <div class="activity-time">Just now</div>
+            `;
+            
+            feed.insertBefore(activityItem, feed.firstChild);
+            
+            // Keep only last 10 activities
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--accent-green)' : type === 'processing' ? 'var(--accent-orange)' : 'var(--accent-blue)'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function initializeAnimations() {
+            // Add fade-in animation to panels
+            document.querySelectorAll('.panel').forEach((panel, index) => {
+                setTimeout(() => {
+                    panel.classList.add('fade-in');
+                }, index * 200);
+            });
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Load saved code on page load
+        window.addEventListener('load', () => {
+            const savedCode = localStorage.getItem('zenvora-code');
+            if (savedCode) {
+                document.getElementById('codeInput').value = savedCode;
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 's':
+                        e.preventDefault();
+                        saveCode();
+                        break;
+                    case 'Enter':
+                        e.preventDefault();
+                        runAnalysis();
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        aiAssist();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenvora AI Platform - Start Here</title>
+    
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-blue: #58a6ff;
+            --accent-green: #238636;
+            --accent-purple: #a371f7;
+            --accent-orange: #fb8500;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .app-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+        }
+
+        .app-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(88, 166, 255, 0.3);
+            border-color: var(--accent-blue);
+        }
+
+        .app-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .app-description {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .features-list li {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        .features-list li::before {
+            content: 'AI';
+            position: absolute;
+            left: 0;
+            color: var(--accent-blue);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .launch-button {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .launch-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(88, 166, 255, 0.4);
+        }
+
+        .version-badge {
+            background: var(--bg-tertiary);
+            color: var(--accent-green);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .status-bar {
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .quick-start {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .quick-start h2 {
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+
+        .step-number {
+            background: var(--accent-blue);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-weight: bold;
+        }
+
+        .mobile-notice {
+            background: var(--accent-orange);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: fadeIn 1.4s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">Zenvora AI Platform</div>
+            <div class="subtitle">Advanced AI-Powered Development Suite</div>
+            <div class="version-badge">Version 2.0 Enhanced</div>
+        </header>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <span>All Systems Operational</span>
+            </div>
+            <div class="status-item">
+                <span>Ready for Development</span>
+            </div>
+            <div class="status-item">
+                <span>AI Engine Active</span>
+            </div>
+        </div>
+
+        <div class="quick-start">
+            <h2>Quick Start Guide</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Choose Your Tool</h3>
+                    <p>Select the AI tool that fits your needs</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Input Your Code</h3>
+                    <p>Paste or type your code</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Get AI Analysis</h3>
+                    <p>Receive instant AI suggestions</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Export Results</h3>
+                    <p>Save or export your enhanced code</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Enhanced AI Editor -->
+            <div class="app-card">
+                <div class="app-icon">AI</div>
+                <h2 class="app-title">Enhanced AI Editor</h2>
+                <p class="app-description">Advanced code editor with real-time AI analysis, smart suggestions, and live performance metrics.</p>
+                <ul class="features-list">
+                    <li>Real-time AI code analysis</li>
+                    <li>Smart auto-completion</li>
+                    <li>Performance monitoring</li>
+                    <li>Auto-save functionality</li>
+                    <li>Mobile responsive design</li>
+                </ul>
+                <a href="app_enhanced.html" class="launch-button">
+                    <span>Launch Enhanced Editor</span>
+                </a>
+            </div>
+
+            <!-- AI Tools Suite -->
+            <div class="app-card">
+                <div class="app-icon">TOOLS</div>
+                <h2 class="app-title">AI Tools Suite</h2>
+                <p class="app-description">Complete collection of specialized AI tools for code generation, testing, documentation, and optimization.</p>
+                <ul class="features-list">
+                    <li>Code Generator</li>
+                    <li>Test Generator</li>
+                    <li>Documentation Generator</li>
+                    <li>Security Scanner</li>
+                    <li>Performance Optimizer</li>
+                </ul>
+                <a href="ai_tools.html" class="launch-button">
+                    <span>Launch AI Tools</span>
+                </a>
+            </div>
+
+            <!-- Original App -->
+            <div class="app-card">
+                <div class="app-icon">CLASSIC</div>
+                <h2 class="app-title">Original App</h2>
+                <p class="app-description">The original Zenvora AI Platform with basic features and functionality.</p>
+                <ul class="features-list">
+                    <li>Basic AI dashboard</li>
+                    <li>Repository monitoring</li>
+                    <li>Simple interface</li>
+                    <li>GitHub integration</li>
+                    <li>Lightweight design</li>
+                </ul>
+                <a href="app.html" class="launch-button">
+                    <span>Launch Original App</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="quick-start">
+            <h2>What's New in Version 2.0</h2>
+            <ul class="features-list">
+                <li>5x faster performance with optimized algorithms</li>
+                <li>Real-time AI analysis with instant suggestions</li>
+                <li>Advanced security scanning and vulnerability detection</li>
+                <li>Mobile-responsive design for all devices</li>
+                <li>Professional dark theme with smooth animations</li>
+                <li>Comprehensive AI tools suite</li>
+                <li>Auto-save and keyboard shortcuts</li>
+                <li>Multi-language support (JavaScript, Python, Java, C++)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeInUp 0.8s ease-out';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.app-card').forEach(card => {
+                observer.observe(card);
+            });
+
+            // Add ripple effect to buttons
+            document.querySelectorAll('.launch-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    ripple.style.position = 'absolute';
+                    ripple.style.width = '20px';
+                    ripple.style.height = '20px';
+                    ripple.style.background = 'rgba(255, 255, 255, 0.5)';
+                    ripple.style.borderRadius = '50%';
+                    ripple.style.transform = 'translate(-50%, -50%)';
+                    ripple.style.pointerEvents = 'none';
+                    ripple.style.animation = 'ripple 0.6s ease-out';
+                    
+                    const rect = this.getBoundingClientRect();
+                    ripple.style.left = (e.clientX - rect.left) + 'px';
+                    ripple.style.top = (e.clientY - rect.top) + 'px';
+                    
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    width: 200px;
+                    height: 200px;
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
