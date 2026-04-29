@@ -5,54 +5,22 @@ Write-Host "Starting Zenvora AI Platform..." -ForegroundColor Cyan
 Write-Host ""
 
 $scriptDir = $PSScriptRoot
-$frontendPort = 3000
+$frontendPort = 8888
 $backendPort = 3001
 
-# Function to start frontend server
+# Function to start frontend server (runs in foreground)
 function Start-FrontendServer {
     Write-Host "Starting Frontend Server on port $frontendPort..." -ForegroundColor Cyan
+    Write-Host "Directory: $scriptDir" -ForegroundColor Gray
     
-    $frontendScript = {
-        param($port, $dir)
-        $listener = New-Object System.Net.HttpListener
-        $listener.Prefixes.Add("http://localhost:$port/")
-        $listener.Start()
-        Write-Host "Frontend server listening on port $port"
-        
-        while ($listener.IsListening) {
-            try {
-                $context = $listener.GetContext()
-                $request = $context.Request
-                $response = $context.Response
-                
-                $url = $request.Url.LocalPath
-                if ($url -eq "/") {
-                    $url = "/ZENVORA_WINDSURF.html"
-                }
-                
-                $filePath = Join-Path $dir ($url.TrimStart('/'))
-                
-                if (Test-Path $filePath) {
-                    $content = [System.IO.File]::ReadAllText($filePath)
-                    $buffer = [System.Text.Encoding]::UTF8.GetBytes($content)
-                    $response.ContentLength64 = $buffer.Length
-                    $response.ContentType = "text/html"
-                    $response.OutputStream.Write($buffer, 0, $buffer.Length)
-                } else {
-                    $response.StatusCode = 404
-                }
-                
-                $response.Close()
-            } catch {
-                # Handle connection errors
-            }
-        }
-    }
+    $listener = New-Object System.Net.HttpListener
+    $listener.Prefixes.Add("http://localhost:$frontendPort/")
+    $listener.Start()
     
-    $job = Start-Job -ScriptBlock $frontendScript -ArgumentList $frontendPort, $scriptDir -Name "ZenvoraFrontend"
-    Write-Host "Frontend server started (Job ID: $($job.Id))" -ForegroundColor Green
+    Write-Host "Frontend server listening on port $frontendPort" -ForegroundColor Green
     Write-Host "Access: http://localhost:$frontendPort/ZENVORA_WINDSURF.html" -ForegroundColor Cyan
-    return $job
+    
+    return $listener
 }
 
 # Function to start backend server
@@ -126,11 +94,12 @@ Write-Host "Starting Zenvora AI Platform..." -ForegroundColor Cyan
 Write-Host "----------------------------------------" -ForegroundColor Gray
 Write-Host ""
 
-# Start servers
-$frontendJob = Start-FrontendServer
+# Start backend server (as background job)
+$backendJob = Start-BackendServer
 Write-Host ""
 
-$backendJob = Start-BackendServer
+# Start frontend server (in foreground)
+$frontendListener = Start-FrontendServer
 Write-Host ""
 
 # Setup auto-start
@@ -154,8 +123,8 @@ if ($backendJob) {
 Write-Host ""
 
 Write-Host "AUTO-START:" -ForegroundColor Cyan
-Write-Host "- Servers running as background jobs" -ForegroundColor White
-Write-Host "- Will continue running if you close this window" -ForegroundColor White
+Write-Host "- Frontend server running in foreground" -ForegroundColor White
+Write-Host "- Backend server running as background job (if available)" -ForegroundColor White
 Write-Host "- Auto-start on system boot enabled (if run as Admin)" -ForegroundColor Green
 Write-Host ""
 
@@ -169,14 +138,47 @@ Start-Process "http://localhost:$frontendPort/ZENVORA_WINDSURF.html"
 Write-Host "Browser opened" -ForegroundColor Green
 Write-Host ""
 
-Write-Host "Management Commands:" -ForegroundColor Yellow
-Write-Host "Stop servers: Stop-Job -Name ZenvoraFrontend, ZenvoraBackend" -ForegroundColor Gray
-Write-Host "Check status: Get-Job" -ForegroundColor Gray
-Write-Host "View logs: Receive-Job -Name ZenvoraFrontend -Keep" -ForegroundColor Gray
+Write-Host "Press Ctrl+C to stop the server..." -ForegroundColor Yellow
 Write-Host ""
 
-Write-Host "Press any key to exit (servers continue running)..." -ForegroundColor Gray
-$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+# Main server loop (foreground)
+while ($frontendListener.IsListening) {
+    try {
+        $context = $frontendListener.GetContext()
+        $request = $context.Request
+        $response = $context.Response
+        
+        $url = $request.Url.LocalPath
+        if ($url -eq "/") {
+            $url = "/ZENVORA_WINDSURF.html"
+        }
+        
+        $filePath = Join-Path $scriptDir ($url.TrimStart('/'))
+        
+        Write-Host "Request: $url -> $filePath" -ForegroundColor Gray
+        
+        if (Test-Path $filePath) {
+            try {
+                $content = [System.IO.File]::ReadAllText($filePath)
+                $buffer = [System.Text.Encoding]::UTF8.GetBytes($content)
+                $response.ContentLength64 = $buffer.Length
+                $response.ContentType = "text/html"
+                $response.OutputStream.Write($buffer, 0, $buffer.Length)
+                Write-Host "Served: $($buffer.Length) bytes" -ForegroundColor Green
+            } catch {
+                Write-Host "Error serving file: $_" -ForegroundColor Red
+                $response.StatusCode = 500
+            }
+        } else {
+            Write-Host "File not found: $filePath" -ForegroundColor Yellow
+            $response.StatusCode = 404
+        }
+        
+        $response.Close()
+    } catch {
+        Write-Host "Connection error: $_" -ForegroundColor Red
+    }
+}
 
 Write-Host ""
-Write-Host "Exiting - servers continue running in background" -ForegroundColor Green
+Write-Host "Server stopped" -ForegroundColor Yellow

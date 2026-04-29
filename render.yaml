@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: zenvora-ai-platform
+    env: static
+    plan: free
+    buildCommand: ""
+    startCommand: ""
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /ZENVORA_WINDSURF.html
